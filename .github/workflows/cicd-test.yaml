@@ -17,7 +17,9 @@ on:   # when to trigger the workflow
       GIT_REPOSITORY:
         required: true
         type: string
-
+      GIT_BRANCH:
+        required: true
+        type: string
 
 jobs:
   ci_job:
@@ -31,7 +33,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ${{ inputs.GIT_REPOSITORY }}
-          ref: cicd
+          ref: ${{ inputs.GIT_BRANCH }}
           token: ${{ secrets.TOKEN_GITHUB }}
 
 
