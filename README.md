@@ -1,2 +1,2 @@
-# ecommerce-microservices-cicd
-A dedicated repo for handling CICD workflows and configs
+## Config services
+A branch to update deployment configuration for projects' services
