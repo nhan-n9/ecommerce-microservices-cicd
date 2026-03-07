@@ -10,7 +10,6 @@ on:
     secrets:
       TOKEN_GITHUB:
         required: true
-        type: string
 
 jobs:
   update_deploy_config:
