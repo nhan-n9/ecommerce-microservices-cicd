@@ -25,9 +25,11 @@ runs:
     - name: Run Maven test
       if: ${{ inputs.TEST_ENABLED }}
       working-directory: app/services/${{ inputs.SERVICE_NAME }}
+      shell: bash
       run: mvn test
 
 
     - name: Build with Maven
       working-directory: app/services/${{ inputs.SERVICE_NAME }}
+      shell: bash
       run: mvn clean package -DskipTests
