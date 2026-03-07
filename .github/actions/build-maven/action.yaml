@@ -2,10 +2,12 @@ name: Handle Maven build process
 
 inputs:
   JAVA_VERSION:
+    type: string
   SERVICE_NAME:
+    type: string
   TEST_ENABLED:
+    type: string
 
-outputs:
 
 runs:
   using: "composite"

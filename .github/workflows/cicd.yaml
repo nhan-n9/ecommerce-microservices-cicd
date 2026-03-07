@@ -61,7 +61,7 @@ jobs:
           GIT_REPOSITORY: ${{ github.repository }}
           GIT_BRANCH: ${{ inputs.GIT_BRANCH }}
           REPO_GIT_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-          CONTEXT: "./app"
+          CONTEXT: "app"
 
 
       - name: Build source code
@@ -89,13 +89,13 @@ jobs:
           GIT_REPOSITORY: nhan-n9/ecommerce-microservices-cicd
           GIT_BRANCH: configs
           REPO_GIT_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-          CONTEXT: "./service-configs"
+          CONTEXT: "service-configs"
 
 
       - name: Update new image digest
         uses: ./.github/actions/edit-yaml
         with:
-          TARGET_FILE_PATH: "./service-configs/${{ inputs.PROJECT_NAME }}/${{ inputs.CICD_ENVIRONMENT }}/${{ inputs.SERVICE_NAME }}.yaml"
+          TARGET_FILE_PATH: "service-configs/${{ inputs.PROJECT_NAME }}/${{ inputs.CICD_ENVIRONMENT }}/${{ inputs.SERVICE_NAME }}.yaml"
           EDIT_KEY: "image.digest"
           EDIT_VALUE: "${{ steps.process-image.outputs.image-digest }}"
 
@@ -106,4 +106,4 @@ jobs:
         with:
           GIT_BRANCH: ${{ inputs.GIT_BRANCH }}
           REPO_GIT_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-          CONTEXT: "./service-configs"
+          CONTEXT: "service-configs"

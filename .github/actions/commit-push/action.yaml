@@ -2,10 +2,12 @@ name: Commit and Push to a repository
 
 inputs:
   GIT_BRANCH:
+    type: string
   REPO_GIT_TOKEN:
+    type: string
   CONTEXT:
+    type: string
 
-outputs:
 
 runs:
   using: "composite"
