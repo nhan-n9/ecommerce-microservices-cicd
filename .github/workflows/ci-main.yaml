@@ -53,6 +53,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.GIT_BRANCH }}
+          path: app
 
 
       - name: Build source code
