@@ -2,6 +2,7 @@ name: Build and Push Docker image
 
 on:
   workflow_call:
+    inputs:
       IMAGE_TAG:
       SERVICE_NAME:
       SECURITY_SCAN_ENABLED:

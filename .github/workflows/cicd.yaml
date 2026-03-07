@@ -75,7 +75,6 @@ jobs:
 
   build_push_image:
     uses: ./.github/workflows/build-push-image.yaml
-    id: process-image
     with:
       IMAGE_NAME: ${{ inputs.IMAGE_NAME }}
       IMAGE_TAG: ${{ inputs.CICD_ENVIRONMENT }}
