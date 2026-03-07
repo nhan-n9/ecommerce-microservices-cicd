@@ -1,0 +1,37 @@
+name: Handle Npm build process
+
+inputs:
+  NPM_VERSION:
+    type: string
+    default: '20'
+  SERVICE_NAME:
+    type: string
+  TEST_ENABLED:
+    type: string
+
+
+runs:
+  using: "composite"
+
+  steps:
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.NPM_VERSION }}
+        cache: 'npm'
+
+    # only run test if enabled
+    - name: Run Npm test
+      if: ${{ inputs.TEST_ENABLED }}
+      working-directory: app/services/${{ inputs.SERVICE_NAME }}
+      shell: bash
+      run: npm test
+
+    - name: Install dependencies
+      shell: bash
+      run: npm install
+
+
+    - name: Build project
+      # Runs the 'build' script defined in your package.json
+      run: npm run build --if-present
