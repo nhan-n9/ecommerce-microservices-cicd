@@ -77,7 +77,7 @@ jobs:
         id: build-docker-image
         with:
           context: app/services/${{ inputs.SERVICE_NAME }}
-          tags: ${{ inputs.IMAGE_NAME }}:${{ inputs.IMAGE_TAG }}
+          tags: ${{ inputs.IMAGE_NAME }}:${{ inputs.CICD_ENVIRONMENT }}
           push: true
 
       # Security scan for image
@@ -85,7 +85,7 @@ jobs:
         uses: aquasecurity/trivy-action@0.33.1
         if: ${{ inputs.SECURITY_SCAN_ENABLED }}
         with:
-          image-ref: ${{ inputs.IMAGE_NAME }}:${{ inputs.IMAGE_TAG }}
+          image-ref: ${{ inputs.IMAGE_NAME }}:${{ inputs.CICD_ENVIRONMENT }}
           format: 'sarif'
           exit-code: '1'
           output: 'trivy-results.sarif'
