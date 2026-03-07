@@ -76,7 +76,7 @@ jobs:
 
       - if: ${{ inputs.SONAR_SCAN_ENABLED }}
         name: SonarQube scan
-        uses: philips-software/sonar-scanner-action@latest
+        uses: philips-software/sonar-scanner-action@v1.5.1
         with:
           token: ${{ secrets.SONAR_TOKEN }}
           projectName: ${{ inputs.SONAR_PROJECT_NAME }}
