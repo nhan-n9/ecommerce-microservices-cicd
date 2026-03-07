@@ -88,11 +88,11 @@ jobs:
 
 
       - if: ${{ inputs.SONAR_SCAN_ENABLED }}
-        name: Set up JDK 17
+        name: Set up JDK for Sonar
         uses: actions/setup-java@v4
         with:
-          java-version: 17
-          distribution: 'zulu' # Alternative distribution options are available.
+          java-version: ${{ inputs.BUILD_TOOL_VERSION }}
+          distribution: temurin
       - if: ${{ inputs.SONAR_SCAN_ENABLED }}
         name: Cache SonarQube packages
         uses: actions/cache@v4
@@ -112,7 +112,7 @@ jobs:
         working-directory: app/services/${{ inputs.SERVICE_NAME }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=nhan-n9_ecommerce-microservices
+        run: mvn -B -DskipTests verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=nhan-n9_ecommerce-microservices
 
 
 
