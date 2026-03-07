@@ -140,6 +140,7 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
           category: trivy
+          checkout_path: app
 
 
   update_deploy_config:
