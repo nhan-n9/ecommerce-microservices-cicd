@@ -25,8 +25,8 @@ jobs:
       - name: Checkout config source
         uses: actions/checkout@v4
         with:
-          repository: ${{ secrets.CONFIG_REPO }}
-          ref: ${{ secrets.CONFIG_BRANCH }}
+          repository: ${{ inputs.CONFIG_REPO }}
+          ref: ${{ inputs.CONFIG_BRANCH }}
           token: ${{ secrets.TOKEN_GITHUB }}
 
 
@@ -43,5 +43,5 @@ jobs:
         with:
           # need PAT at both checkout + push
           github_token: ${{ secrets.TOKEN_GITHUB }}
-          branch: ${{ secrets.CONFIG_BRANCH }}
-          repository: ${{ secrets.CONFIG_REPO }}
+          branch: ${{ inputs.CONFIG_BRANCH }}
+          repository: ${{ inputs.CONFIG_REPO }}
