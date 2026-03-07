@@ -79,23 +79,40 @@ jobs:
           BUILD_TYPE: ${{ inputs.BUILD_TYPE }}
 
 
-      - if: ${{ inputs.SONAR_SCAN_ENABLED }}
-        name: Setup Java for Sonar
-        uses: actions/setup-java@v5
-        with:
-          distribution: temurin
-          java-version: '21'
+      # - if: ${{ inputs.SONAR_SCAN_ENABLED }}
+      #   name: Setup Java for Sonar
+      #   uses: actions/setup-java@v5
+      #   with:
+      #     distribution: temurin
+      #     java-version: '21'
 
 
       - if: ${{ inputs.SONAR_SCAN_ENABLED }}
-        name: SonarQube scan
-        uses: SonarSource/sonarqube-scan-action@v7
+        name: Set up JDK 17
+        uses: actions/setup-java@v4
         with:
+          java-version: 17
+          distribution: 'zulu' # Alternative distribution options are available.
+      - if: ${{ inputs.SONAR_SCAN_ENABLED }}
+        name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - if: ${{ inputs.SONAR_SCAN_ENABLED }}
+        name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+      - if: ${{ inputs.SONAR_SCAN_ENABLED }}
+        name: Build and analyze
+        env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          # projectName: ${{ inputs.SONAR_PROJECT_NAME }}
-          # projectKey: ${{ inputs.SONAR_PROJECT_KEY }}
-          # url: https://sonarcloud.io
-          # organization: nhan-n9
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=nhan-n9_ecommerce-microservices
+
 
 
       - name: Login to Docker Hub
@@ -140,7 +157,7 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
           category: trivy
-          checkout_path: app
+          # checkout_path: app
 
 
   update_deploy_config:
