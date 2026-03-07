@@ -109,7 +109,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - if: ${{ inputs.SONAR_SCAN_ENABLED }}
         name: Build and analyze
-        # working-directory: app/services/${{ inputs.SERVICE_NAME }}
+        working-directory: app/services/${{ inputs.SERVICE_NAME }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B -DskipTests verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=nhan-n9_ecommerce-microservices
@@ -144,21 +144,25 @@ jobs:
         if: ${{ inputs.TRIVY_SCAN_ENABLED }}
         with:
           image-ref: ${{ inputs.IMAGE_NAME }}:${{ inputs.CICD_ENVIRONMENT }}
-          format: sarif
-          ignore-unfixed: true
-          exit-code: '0'
-          output: 'trivy-results.sarif'
-          skip-setup-trivy: true
-          scanners: vuln
-          severity: HIGH,CRITICAL
+          # format: table
+          # ignore-unfixed: true
+          # exit-code: '0'
+          # output: 'trivy-results.sarif'
+          # skip-setup-trivy: true
+          # severity: HIGH,CRITICAL
+          scan-type: 'fs'
+          format: 'github'
+          output: 'dependency-results.sbom.json'
+          scan-ref: '.'
+          github-pat: ${{ secrets.TOKEN_GITHUB }}
 
-      - name: Upload results to GitHub Security
-        uses: github/codeql-action/upload-sarif@v4
-        if: ${{ inputs.TRIVY_SCAN_ENABLED }}
-        with:
-          sarif_file: 'trivy-results.sarif'
-          category: trivy
-          checkout_path: app
+      # - name: Upload results to GitHub Security
+      #   uses: github/codeql-action/upload-sarif@v4
+      #   if: ${{ inputs.TRIVY_SCAN_ENABLED }}
+      #   with:
+      #     sarif_file: 'trivy-results.sarif'
+      #     category: trivy
+      #     checkout_path: app
 
 
   update_deploy_config:
