@@ -1,4 +1,37 @@
-name: Checkout and Build source code
+name: Build source code
 
 on:
-  workflow_dispatch:   # manual trigger
+  workflow_call:
+    inputs:
+      BUILD_TYPE:
+      SERVICE_NAME:
+      BUILD_TOOL_VERSION:
+      TEST_ENABLED:
+
+
+jobs:
+  build_source_code:
+    runs-on: ubuntu-latest
+ 
+    # outputs:
+    #   digest: ${{ steps.build-docker-image.outputs.digest }}
+
+    steps:
+      - name: Run Maven build
+        if: ${{ inputs.BUILD_TYPE == 'maven' || inputs.BUILD_TYPE == 'mvn' }}
+        uses: ./.github/actions/build-maven
+        with:
+          SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
+          JAVA_VERSION: ${{ inputs.BUILD_TOOL_VERSION }}
+          TEST_ENABLED: ${{ inputs.TEST_ENABLED }}
+        # env:
+        #   MAVEN_OPTS: "-Xmx2g"
+
+
+      - name: Run Npm build
+        if: ${{ inputs.BUILD_TYPE == 'npm' }}
+        uses: ./.github/actions/build-npm
+        with:
+          SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
+          NPM_VERSION: ${{ inputs.BUILD_TOOL_VERSION }}
+          TEST_ENABLED: ${{ inputs.TEST_ENABLED }}

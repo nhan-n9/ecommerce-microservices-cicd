@@ -1,0 +1,102 @@
+
+name: Test CICD Workflow
+
+on:   # when to trigger the workflow
+  workflow_call:
+    inputs:
+      BUILD_TYPE:
+        required: false
+        type: string
+        default: maven
+      CICD_ENVIRONMENT:
+        required: false
+        type: string
+        default: dev
+      SERVICE_NAME:
+        required: true
+        type: string
+      IMAGE_NAME:
+        required: true
+        type: string
+      GIT_REPOSITORY:
+        required: true
+        type: string
+      GIT_BRANCH:
+        required: true
+        type: string
+        default: main
+      PROJECT_NAME:
+        required: true
+        type: string
+      BUILD_TOOL_VERSION:
+        required: false
+        type: string
+        default: '21'   # default for mvn
+      CODE_TEST_ENABLED:
+        required: false
+        type: boolean
+        default: false
+      TRIVY_SCAN_ENABLED:
+        required: false
+        type: boolean
+        default: false
+
+
+jobs:
+  ci_jobs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: ./.github/actions/checkout
+        with:
+          GIT_REPOSITORY: ${{ inputs.GIT_REPOSITORY }}
+          GIT_BRANCH: ${{ inputs.GIT_BRANCH }}
+          REPO_GIT_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+          CONTEXT: "./${{ inputs.SERVICE_NAME }}"
+
+
+      - name: Build source code
+        uses: ./.github/workflows/build-package.yaml
+        with:
+          SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
+          BUILD_TOOL_VERSION: ${{ inputs.BUILD_TOOL_VERSION }}
+          TEST_ENABLED: ${{ inputs.CODE_TEST_ENABLED }}
+          BUILD_TYPE: ${{ inputs.BUILD_TYPE }}
+
+
+      - name: Build and push Docker image
+        uses: ./.github/workflows/build-push-image.yaml
+        id: process-image
+        secrets: inherit
+        with:
+          IMAGE_NAME: ${{ inputs.IMAGE_NAME }}
+          IMAGE_TAG: ${{ inputs.CICD_ENVIRONMENT }}
+          SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
+          SECURITY_SCAN_ENABLED: ${{ inputs.TRIVY_SCAN_ENABLED }}
+
+
+      - name: Checkout config repo
+        uses: ./.github/actions/checkout
+        with:
+          GIT_REPOSITORY: ${{ inputs.GIT_REPOSITORY }}
+          GIT_BRANCH: configs
+          REPO_GIT_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+          CONTEXT: "./service-configs"
+
+
+      - name: Update new image digest
+        uses: ./.github/actions/edit-yaml
+        with:
+          TARGET_FILE_PATH: "./service-configs/${{ inputs.PROJECT_NAME }}/${{ inputs.CICD_ENVIRONMENT }}/${{ inputs.SERVICE_NAME }}.yaml"
+          EDIT_KEY: "image.digest"
+          EDIT_VALUE: "${{ steps.process-image.outputs.image-digest }}"
+
+      
+      # push to the config repo for GitOps
+      - name: Commit & Push changes
+        uses: ./.github/actions/commit-push
+        with:
+          GIT_BRANCH: ${{ inputs.GIT_BRANCH }}
+          REPO_GIT_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+          CONTEXT: "./service-configs"
