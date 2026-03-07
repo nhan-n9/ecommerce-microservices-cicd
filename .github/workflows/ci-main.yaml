@@ -56,7 +56,7 @@ jobs:
 
 
       - name: Build source code
-        uses: nhan-n9/ecommerce-microservices-cicd/.github/actions/handle-build-source
+        uses: nhan-n9/ecommerce-microservices-cicd/.github/actions/handle-build-source@main
         with:
           SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
           BUILD_TOOL_VERSION: ${{ inputs.BUILD_TOOL_VERSION }}
@@ -99,7 +99,7 @@ jobs:
 
   update_deploy_config:
     needs: ci_jobs
-    uses: nhan-n9/ecommerce-microservices-cicd/.github/workflows/update_deploy.yaml
+    uses: nhan-n9/ecommerce-microservices-cicd/.github/workflows/update_deploy.yaml@main
     secrets:
       TOKEN_GITHUB: ${{ secrets.TOKEN_GITHUB }}
     with:

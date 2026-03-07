@@ -17,7 +17,7 @@ runs:
   steps:
     - if: ${{ inputs.BUILD_TYPE == 'maven' || inputs.BUILD_TYPE == 'mvn' }}
       name: Run Maven build
-      uses: nhan-n9/ecommerce-microservices-cicd/.github/actions/build-maven
+      uses: nhan-n9/ecommerce-microservices-cicd/.github/actions/build-maven@main
       with:
         SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
         JAVA_VERSION: ${{ inputs.BUILD_TOOL_VERSION }}
@@ -28,7 +28,7 @@ runs:
 
     - if: ${{ inputs.BUILD_TYPE == 'npm' }}
       name: Run Npm build
-      uses: nhan-n9/ecommerce-microservices-cicd/.github/actions/build-npm
+      uses: nhan-n9/ecommerce-microservices-cicd/.github/actions/build-npm@main
       with:
         SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
         NPM_VERSION: ${{ inputs.BUILD_TOOL_VERSION }}
