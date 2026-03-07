@@ -4,9 +4,13 @@ on:
   workflow_call:
     inputs:
       BUILD_TYPE:
+        type: string
       SERVICE_NAME:
+        type: string
       BUILD_TOOL_VERSION:
+        type: string
       TEST_ENABLED:
+        type: boolean
 
 
 jobs:

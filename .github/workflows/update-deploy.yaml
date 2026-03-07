@@ -3,10 +3,14 @@ name: Build source code
 on:
   workflow_call:
     inputs:
-      BUILD_TYPE:
+      GIT_BRANCH:
+        type: string
       SERVICE_NAME:
-      BUILD_TOOL_VERSION:
-      TEST_ENABLED:
+        type: string
+      TARGET_FILE_PATH:
+        type: string
+      EDIT_VALUE:
+        type: string
 
 
 jobs:

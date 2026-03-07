@@ -4,9 +4,13 @@ on:
   workflow_call:
     inputs:
       IMAGE_TAG:
+        type: string
       SERVICE_NAME:
+        type: string
       SECURITY_SCAN_ENABLED:
+        type: boolean
       IMAGE_NAME:
+        type: string
 
 jobs:
   process_docker_image:
