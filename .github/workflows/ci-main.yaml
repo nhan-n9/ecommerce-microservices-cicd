@@ -48,6 +48,11 @@ on:   # when to trigger the workflow
       SONAR_PROJECT_KEY:
         type: string
 
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
 # env:
 #   TRIVY_VERSION: 0.69.3
 
