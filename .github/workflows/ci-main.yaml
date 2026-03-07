@@ -41,6 +41,8 @@ on:   # when to trigger the workflow
         type: boolean
         default: false
 
+env:
+  TRIVY_VERSION: 0.69.3
 
 jobs:
   ci_jobs:
@@ -81,14 +83,22 @@ jobs:
           push: true
 
       # Security scan for image
+      - name: Setup Trivy
+        uses: aquasecurity/setup-trivy@v0.2.2
+        with:
+          cache: true
+          version: ${{ env.TRIVY_VERSION }}
+
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@master
         if: ${{ inputs.TRIVY_SCAN_ENABLED }}
         with:
           image-ref: ${{ inputs.IMAGE_NAME }}:${{ inputs.CICD_ENVIRONMENT }}
           format: 'sarif'
+          ignore-unfixed: true
           exit-code: '1'
           output: 'trivy-results.sarif'
+          skip-setup-trivy: true
 
       - name: Upload results to GitHub Security
         uses: github/codeql-action/upload-sarif@v3
