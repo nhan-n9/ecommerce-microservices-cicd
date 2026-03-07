@@ -99,7 +99,7 @@ jobs:
 
   update_deploy_config:
     needs: ci_jobs
-    uses: nhan-n9/ecommerce-microservices-cicd/.github/workflows/update_deploy.yaml@main
+    uses: nhan-n9/ecommerce-microservices-cicd/.github/workflows/update-deploy.yaml@main
     secrets:
       TOKEN_GITHUB: ${{ secrets.TOKEN_GITHUB }}
     with:
