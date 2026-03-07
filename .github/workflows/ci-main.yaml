@@ -1,5 +1,5 @@
 
-name: Test CICD Workflow
+name: Main CI Workflow
 
 on:   # when to trigger the workflow
   workflow_call:
@@ -83,7 +83,7 @@ jobs:
       # Security scan for image
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.33.1
-        if: ${{ inputs.SECURITY_SCAN_ENABLED }}
+        if: ${{ inputs.TRIVY_SCAN_ENABLED }}
         with:
           image-ref: ${{ inputs.IMAGE_NAME }}:${{ inputs.CICD_ENVIRONMENT }}
           format: 'sarif'
@@ -92,7 +92,7 @@ jobs:
 
       - name: Upload results to GitHub Security
         uses: github/codeql-action/upload-sarif@v3
-        if: ${{ inputs.SECURITY_SCAN_ENABLED }}
+        if: ${{ inputs.TRIVY_SCAN_ENABLED }}
         with:
           sarif_file: 'trivy-results.sarif'
           category: trivy
