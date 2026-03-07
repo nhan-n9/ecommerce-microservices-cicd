@@ -40,6 +40,13 @@ on:   # when to trigger the workflow
         required: false
         type: boolean
         default: false
+      SONAR_SCAN_ENABLED:
+        type: boolean
+        default: true
+      SONAR_PROJECT_NAME:
+        type: string
+      SONAR_PROJECT_KEY:
+        type: string
 
 # env:
 #   TRIVY_VERSION: 0.69.3
@@ -65,6 +72,17 @@ jobs:
           BUILD_TOOL_VERSION: ${{ inputs.BUILD_TOOL_VERSION }}
           TEST_ENABLED: ${{ inputs.CODE_TEST_ENABLED }}
           BUILD_TYPE: ${{ inputs.BUILD_TYPE }}
+
+
+      - if: ${{ inputs.SONAR_SCAN_ENABLED }}
+        name: SonarQube scan
+        uses: philips-software/sonar-scanner-action@latest
+        with:
+          token: ${{ secrets.SONAR_TOKEN }}
+          projectName: ${{ inputs.SONAR_PROJECT_NAME }}
+          projectKey: ${{ inputs.SONAR_PROJECT_KEY }}
+          url: https://sonarcloud.io
+          organization: nhan-n9
 
 
       - name: Login to Docker Hub
