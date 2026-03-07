@@ -15,4 +15,4 @@ configMap:
     SPRING_PROFILES_ACTIVE: dev
 livenessProbe: null
 readinessProbe: null
-image.digest: sha256:bf135e862ec4acbfce88964dd861e403d94b0ebab60d0cdc58e95a140c039973
+image.digest: sha256:eb3bf4c190b1992524811c8e48905ae8f85f133dcf6b87c374b24ea51bc40fa6
