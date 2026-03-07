@@ -96,6 +96,7 @@ jobs:
       - if: ${{ inputs.SONAR_SCAN_ENABLED }}
         name: Cache SonarQube packages
         uses: actions/cache@v4
+        working-directory: app/services/${{ inputs.SERVICE_NAME }}
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
@@ -103,12 +104,14 @@ jobs:
       - if: ${{ inputs.SONAR_SCAN_ENABLED }}
         name: Cache Maven packages
         uses: actions/cache@v4
+        working-directory: app/services/${{ inputs.SERVICE_NAME }}
         with:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
       - if: ${{ inputs.SONAR_SCAN_ENABLED }}
         name: Build and analyze
+        working-directory: app/services/${{ inputs.SERVICE_NAME }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=nhan-n9_ecommerce-microservices
