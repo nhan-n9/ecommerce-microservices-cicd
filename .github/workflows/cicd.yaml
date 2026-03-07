@@ -43,7 +43,7 @@ on:   # when to trigger the workflow
 
 
 jobs:
-  ci_jobs:
+  checkout_resources:
     runs-on: ubuntu-latest
 
     steps:
@@ -64,46 +64,20 @@ jobs:
           CONTEXT: "app"
 
 
-      - name: Build source code
-        uses: ./.github/workflows/build-package.yaml
-        with:
-          SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
-          BUILD_TOOL_VERSION: ${{ inputs.BUILD_TOOL_VERSION }}
-          TEST_ENABLED: ${{ inputs.CODE_TEST_ENABLED }}
-          BUILD_TYPE: ${{ inputs.BUILD_TYPE }}
+  build_source:
+    uses: ./.github/workflows/build-package.yaml
+    with:
+      SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
+      BUILD_TOOL_VERSION: ${{ inputs.BUILD_TOOL_VERSION }}
+      TEST_ENABLED: ${{ inputs.CODE_TEST_ENABLED }}
+      BUILD_TYPE: ${{ inputs.BUILD_TYPE }}
 
 
-      - name: Build and push Docker image
-        uses: ./.github/workflows/build-push-image.yaml
-        id: process-image
-        with:
-          IMAGE_NAME: ${{ inputs.IMAGE_NAME }}
-          IMAGE_TAG: ${{ inputs.CICD_ENVIRONMENT }}
-          SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
-          SECURITY_SCAN_ENABLED: ${{ inputs.TRIVY_SCAN_ENABLED }}
-
-
-      - name: Checkout config source
-        uses: ./.github/actions/checkout
-        with:
-          GIT_REPOSITORY: nhan-n9/ecommerce-microservices-cicd
-          GIT_BRANCH: configs
-          REPO_GIT_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-          CONTEXT: "service-configs"
-
-
-      - name: Update new image digest
-        uses: ./.github/actions/edit-yaml
-        with:
-          TARGET_FILE_PATH: "service-configs/${{ inputs.PROJECT_NAME }}/${{ inputs.CICD_ENVIRONMENT }}/${{ inputs.SERVICE_NAME }}.yaml"
-          EDIT_KEY: "image.digest"
-          EDIT_VALUE: "${{ steps.process-image.outputs.image-digest }}"
-
-      
-      # push to the config repo for GitOps
-      - name: Commit & Push changes
-        uses: ./.github/actions/commit-push
-        with:
-          GIT_BRANCH: ${{ inputs.GIT_BRANCH }}
-          REPO_GIT_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-          CONTEXT: "service-configs"
+  build_push_image:
+    uses: ./.github/workflows/build-push-image.yaml
+    id: process-image
+    with:
+      IMAGE_NAME: ${{ inputs.IMAGE_NAME }}
+      IMAGE_TAG: ${{ inputs.CICD_ENVIRONMENT }}
+      SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
+      SECURITY_SCAN_ENABLED: ${{ inputs.TRIVY_SCAN_ENABLED }}
