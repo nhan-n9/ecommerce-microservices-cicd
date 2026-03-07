@@ -11,8 +11,6 @@ inputs:
     description: full path to the target yaml file
     type: string
 
-outputs:
-
 
 runs:
   using: "composite"

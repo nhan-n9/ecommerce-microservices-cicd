@@ -3,15 +3,14 @@ name: Build source code
 on:
   workflow_call:
     inputs:
-      GIT_BRANCH:
-        type: string
-      SERVICE_NAME:
-        type: string
       TARGET_FILE_PATH:
         type: string
       EDIT_VALUE:
         type: string
-
+    secrets:
+      TOKEN_GITHUB:
+        required: true
+        type: string
 
 jobs:
   update_deploy_config:
@@ -19,26 +18,23 @@ jobs:
 
     steps:
       - name: Checkout config source
-        uses: ./.github/actions/checkout
+        uses: actions/checkout@v4
         with:
-          GIT_REPOSITORY: nhan-n9/ecommerce-microservices-cicd
-          GIT_BRANCH: configs
-          REPO_GIT_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-          CONTEXT: "service-configs"
+          repository: nhan-n9/ecommerce-microservices-cicd
+          ref: configs
+          token: ${{ secrets.TOKEN_GITHUB }}
 
 
       - name: Update new image digest
-        uses: ./.github/actions/edit-yaml
+        uses: nhan-n9/ecommerce-microservices-cicd/.github/actions/edit-yaml
         with:
-          TARGET_FILE_PATH: "service-configs/${{ inputs.PROJECT_NAME }}/${{ inputs.CICD_ENVIRONMENT }}/${{ inputs.SERVICE_NAME }}.yaml"
+          TARGET_FILE_PATH: "${{ inputs.TARGET_FILE_PATH }}"
           EDIT_KEY: "image.digest"
-          EDIT_VALUE: "${{ steps.process-image.outputs.image-digest }}"
+          EDIT_VALUE: "${{ inputs.EDIT_VALUE }}"
 
       
       # push to the config repo for GitOps
-      - name: Commit & Push changes
-        uses: ./.github/actions/commit-push
+      - uses: actions-js/push@master
         with:
-          GIT_BRANCH: ${{ inputs.GIT_BRANCH }}
-          REPO_GIT_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-          CONTEXT: "service-configs"
+          # need PAT at both checkout + push
+          github_token: ${{ secrets.TOKEN_GITHUB }}

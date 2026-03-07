@@ -1,0 +1,35 @@
+name: Handle build source code
+
+inputs:
+  BUILD_TYPE:
+    type: string
+  SERVICE_NAME:
+    type: string
+  BUILD_TOOL_VERSION:
+    type: string
+  TEST_ENABLED:
+    type: boolean
+
+
+runs:
+  using: "composite"
+
+  steps:
+    - if: ${{ inputs.BUILD_TYPE == 'maven' || inputs.BUILD_TYPE == 'mvn' }}
+      name: Run Maven build
+      uses: nhan-n9/ecommerce-microservices-cicd/.github/actions/build-maven
+      with:
+        SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
+        JAVA_VERSION: ${{ inputs.BUILD_TOOL_VERSION }}
+        TEST_ENABLED: ${{ inputs.TEST_ENABLED }}
+      # env:
+      #   MAVEN_OPTS: "-Xmx2g"
+
+
+    - if: ${{ inputs.BUILD_TYPE == 'npm' }}
+      name: Run Npm build
+      uses: nhan-n9/ecommerce-microservices-cicd/.github/actions/build-npm
+      with:
+        SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
+        NPM_VERSION: ${{ inputs.BUILD_TOOL_VERSION }}
+        TEST_ENABLED: ${{ inputs.TEST_ENABLED }}

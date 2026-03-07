@@ -43,40 +43,65 @@ on:   # when to trigger the workflow
 
 
 jobs:
-  checkout_resources:
+  ci_jobs:
     runs-on: ubuntu-latest
 
+    outputs:
+      image-digest: ${{ steps.build-docker-image.outputs.digest }}
+
     steps:
-      - name: Checkout workflow materials
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
-          repository: nhan-n9/ecommerce-microservices-cicd
-          token: ${{ secrets.TOKEN_GITHUB }}
-          ref: main
+          ref: ${{ inputs.GIT_BRANCH }}
 
 
-      - name: Checkout source code
-        uses: ./.github/actions/checkout
+      - name: Build source code
+        uses: nhan-n9/ecommerce-microservices-cicd/.github/actions/handle-build-source
         with:
-          GIT_REPOSITORY: ${{ github.repository }}
-          GIT_BRANCH: ${{ inputs.GIT_BRANCH }}
-          REPO_GIT_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-          CONTEXT: "app"
+          SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
+          BUILD_TOOL_VERSION: ${{ inputs.BUILD_TOOL_VERSION }}
+          TEST_ENABLED: ${{ inputs.CODE_TEST_ENABLED }}
+          BUILD_TYPE: ${{ inputs.BUILD_TYPE }}
 
 
-  build_source:
-    uses: ./.github/workflows/build-package.yaml
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        id: build-docker-image
+        with:
+          context: app/services/${{ inputs.SERVICE_NAME }}
+          tags: ${{ inputs.IMAGE_NAME }}:${{ inputs.IMAGE_TAG }}
+          push: true
+
+      # Security scan for image
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@0.33.1
+        if: ${{ inputs.SECURITY_SCAN_ENABLED }}
+        with:
+          image-ref: ${{ inputs.IMAGE_NAME }}:${{ inputs.IMAGE_TAG }}
+          format: 'sarif'
+          exit-code: '1'
+          output: 'trivy-results.sarif'
+
+      - name: Upload results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v3
+        if: ${{ inputs.SECURITY_SCAN_ENABLED }}
+        with:
+          sarif_file: 'trivy-results.sarif'
+          category: trivy
+
+
+  update_deploy_config:
+    needs: ci_jobs
+    uses: nhan-n9/ecommerce-microservices-cicd/.github/workflows/update_deploy.yaml
+    secrets:
+      TOKEN_GITHUB: ${{ secrets.TOKEN_GITHUB }}
     with:
-      SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
-      BUILD_TOOL_VERSION: ${{ inputs.BUILD_TOOL_VERSION }}
-      TEST_ENABLED: ${{ inputs.CODE_TEST_ENABLED }}
-      BUILD_TYPE: ${{ inputs.BUILD_TYPE }}
-
-
-  build_push_image:
-    uses: ./.github/workflows/build-push-image.yaml
-    with:
-      IMAGE_NAME: ${{ inputs.IMAGE_NAME }}
-      IMAGE_TAG: ${{ inputs.CICD_ENVIRONMENT }}
-      SERVICE_NAME: ${{ inputs.SERVICE_NAME }}
-      SECURITY_SCAN_ENABLED: ${{ inputs.TRIVY_SCAN_ENABLED }}
+      EDIT_VALUE: ${{ needs.ci_jobs.outputs.image-digest }}
+      TARGET_FILE_PATH: "${{ inputs.PROJECT_NAME }}/${{ inputs.CICD_ENVIRONMENT }}/${{ inputs.SERVICE_NAME }}.yaml"

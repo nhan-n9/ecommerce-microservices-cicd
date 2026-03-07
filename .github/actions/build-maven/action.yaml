@@ -27,6 +27,7 @@ runs:
       working-directory: app/services/${{ inputs.SERVICE_NAME }}
       run: mvn test
 
+
     - name: Build with Maven
       working-directory: app/services/${{ inputs.SERVICE_NAME }}
       run: mvn clean package -DskipTests
