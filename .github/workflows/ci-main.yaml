@@ -41,8 +41,8 @@ on:   # when to trigger the workflow
         type: boolean
         default: false
 
-env:
-  TRIVY_VERSION: 0.69.3
+# env:
+#   TRIVY_VERSION: 0.69.3
 
 jobs:
   ci_jobs:
@@ -83,11 +83,12 @@ jobs:
           push: true
 
       # Security scan for image
-      - name: Setup Trivy
+      - if: ${{ inputs.TRIVY_SCAN_ENABLED }}
+        name: Setup Trivy
         uses: aquasecurity/setup-trivy@v0.2.2
         with:
           cache: true
-          version: ${{ env.TRIVY_VERSION }}
+          version: latest
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
