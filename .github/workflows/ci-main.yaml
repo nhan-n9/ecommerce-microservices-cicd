@@ -84,13 +84,13 @@ jobs:
 
       - if: ${{ inputs.SONAR_SCAN_ENABLED }}
         name: SonarQube scan
-        uses: philips-software/sonar-scanner-action@v1.5.1
+        uses: SonarSource/sonarqube-scan-action@v7
         with:
-          token: ${{ secrets.SONAR_TOKEN }}
-          projectName: ${{ inputs.SONAR_PROJECT_NAME }}
-          projectKey: ${{ inputs.SONAR_PROJECT_KEY }}
-          url: https://sonarcloud.io
-          organization: nhan-n9
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          # projectName: ${{ inputs.SONAR_PROJECT_NAME }}
+          # projectKey: ${{ inputs.SONAR_PROJECT_KEY }}
+          # url: https://sonarcloud.io
+          # organization: nhan-n9
 
 
       - name: Login to Docker Hub
