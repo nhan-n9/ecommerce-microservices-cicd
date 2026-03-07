@@ -95,11 +95,13 @@ jobs:
         if: ${{ inputs.TRIVY_SCAN_ENABLED }}
         with:
           image-ref: ${{ inputs.IMAGE_NAME }}:${{ inputs.CICD_ENVIRONMENT }}
-          format: 'sarif'
+          format: sarif
           ignore-unfixed: true
           exit-code: '1'
           output: 'trivy-results.sarif'
           skip-setup-trivy: true
+          scanners: vuln
+          severity: HIGH,CRITICAL
 
       - name: Upload results to GitHub Security
         uses: github/codeql-action/upload-sarif@v3
