@@ -76,7 +76,7 @@ jobs:
 
       - if: ${{ inputs.SONAR_SCAN_ENABLED }}
         name: SonarQube scan
-        uses: philips-software/sonar-scanner-action@v4
+        uses: philips-software/sonar-scanner-action@latest
         with:
           token: ${{ secrets.SONAR_TOKEN }}
           projectName: ${{ inputs.SONAR_PROJECT_NAME }}
@@ -122,7 +122,7 @@ jobs:
           severity: HIGH,CRITICAL
 
       - name: Upload results to GitHub Security
-        uses: github/codeql-action/upload-sarif@latest
+        uses: github/codeql-action/upload-sarif@v4
         if: ${{ inputs.TRIVY_SCAN_ENABLED }}
         with:
           sarif_file: 'trivy-results.sarif'
