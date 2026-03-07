@@ -96,7 +96,6 @@ jobs:
       - if: ${{ inputs.SONAR_SCAN_ENABLED }}
         name: Cache SonarQube packages
         uses: actions/cache@v4
-        working-directory: app/services/${{ inputs.SERVICE_NAME }}
         with:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
@@ -104,10 +103,9 @@ jobs:
       - if: ${{ inputs.SONAR_SCAN_ENABLED }}
         name: Cache Maven packages
         uses: actions/cache@v4
-        working-directory: app/services/${{ inputs.SERVICE_NAME }}
         with:
           path: ~/.m2
-          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-m2-${{ hashFiles(format('app/services/{0}/pom.xml', inputs.SERVICE_NAME)) }}
           restore-keys: ${{ runner.os }}-m2
       - if: ${{ inputs.SONAR_SCAN_ENABLED }}
         name: Build and analyze
