@@ -12,7 +12,7 @@ on:
         default: configs
       CONFIG_REPO:
         type: string
-        default: configs
+        default: nhan-n9/ecommerce-microservices-cicd
     secrets:
       TOKEN_GITHUB:
         required: true
