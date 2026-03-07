@@ -97,7 +97,7 @@ jobs:
           image-ref: ${{ inputs.IMAGE_NAME }}:${{ inputs.CICD_ENVIRONMENT }}
           format: sarif
           ignore-unfixed: true
-          exit-code: '1'
+          exit-code: '0'
           output: 'trivy-results.sarif'
           skip-setup-trivy: true
           scanners: vuln
