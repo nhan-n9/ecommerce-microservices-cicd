@@ -18,11 +18,13 @@ runs:
         distribution: 'temurin'
         cache: 'maven'  # cache deps for faster builds
 
+
     # only run test if enabled
     - name: Run Maven test
       if: ${{ inputs.TEST_ENABLED }}
+      working-directory: app/services/${{ inputs.SERVICE_NAME }}
       run: mvn test
 
     - name: Build with Maven
-      working-directory: services/${{ inputs.SERVICE_NAME }}
+      working-directory: app/services/${{ inputs.SERVICE_NAME }}
       run: mvn clean package -DskipTests

@@ -47,13 +47,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout workflows repo
+        uses: actions/checkout@v4
+        with:
+          token: ${{ inputs.TOKEN_GITHUB }}
+          ref: main
+
+
       - name: Checkout source code
         uses: ./.github/actions/checkout
         with:
           GIT_REPOSITORY: ${{ inputs.GIT_REPOSITORY }}
           GIT_BRANCH: ${{ inputs.GIT_BRANCH }}
           REPO_GIT_TOKEN: ${{ secrets.TOKEN_GITHUB }}
-          CONTEXT: "./${{ inputs.SERVICE_NAME }}"
+          CONTEXT: "./app"
 
 
       - name: Build source code
@@ -75,10 +82,10 @@ jobs:
           SECURITY_SCAN_ENABLED: ${{ inputs.TRIVY_SCAN_ENABLED }}
 
 
-      - name: Checkout config repo
+      - name: Checkout config source
         uses: ./.github/actions/checkout
         with:
-          GIT_REPOSITORY: ${{ inputs.GIT_REPOSITORY }}
+          GIT_REPOSITORY: ${{ github.repository }}
           GIT_BRANCH: configs
           REPO_GIT_TOKEN: ${{ secrets.TOKEN_GITHUB }}
           CONTEXT: "./service-configs"
