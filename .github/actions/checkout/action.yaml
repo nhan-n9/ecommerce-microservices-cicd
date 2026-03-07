@@ -1,0 +1,20 @@
+name: Checkout source code
+
+inputs:
+  GIT_REPOSITORY:
+  GIT_BRANCH:
+  REPO_GIT_TOKEN:
+  CONTEXT:
+
+outputs:
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ inputs.GIT_REPOSITORY }}
+        ref: ${{ inputs.GIT_BRANCH }}
+        token: ${{ inputs.REPO_GIT_TOKEN }}
+        path: ${{ inputs.CONTEXT }}
