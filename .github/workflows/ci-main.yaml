@@ -109,7 +109,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - if: ${{ inputs.SONAR_SCAN_ENABLED }}
         name: Build and analyze
-        working-directory: app/services/${{ inputs.SERVICE_NAME }}
+        # working-directory: app/services/${{ inputs.SERVICE_NAME }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: mvn -B -DskipTests verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=nhan-n9_ecommerce-microservices
