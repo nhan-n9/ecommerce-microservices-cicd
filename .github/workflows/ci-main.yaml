@@ -145,7 +145,7 @@ jobs:
         with:
           image-ref: ${{ inputs.IMAGE_NAME }}:${{ inputs.CICD_ENVIRONMENT }}
           format: 'table'
-          output: 'trivy-results.txt'
+          output: 'trivy-results.table'
           severity: 'HIGH,CRITICAL'
           ignore-unfixed: true
 
