@@ -131,52 +131,8 @@ jobs:
           tags: ${{ inputs.IMAGE_NAME }}:${{ inputs.CICD_ENVIRONMENT }}
           push: true
 
+
       # Security scan for image
-      # - if: ${{ inputs.TRIVY_SCAN_ENABLED }}
-      #   name: Setup Trivy
-      #   uses: aquasecurity/setup-trivy@v0.2.2
-      #   with:
-      #     cache: true
-      #     version: latest
-
-      # - name: Run Trivy vulnerability scanner
-      #   uses: aquasecurity/trivy-action@master
-      #   if: ${{ inputs.TRIVY_SCAN_ENABLED }}
-      #   with:
-      #     image-ref: ${{ inputs.IMAGE_NAME }}:${{ inputs.CICD_ENVIRONMENT }}
-      #     format: 'sarif'
-      #     output: 'trivy-results.sarif'
-          # severity: 'HIGH,CRITICAL'
-          # ignore-unfixed: true
-
-
-      # - name: Upload results to GitHub Security
-      #   uses: github/codeql-action/upload-sarif@v4
-      #   if: ${{ inputs.TRIVY_SCAN_ENABLED }}
-      #   with:
-      #     sarif_file: 'trivy-results.sarif'
-      #     category: trivy
-      #     checkout_path: app
-
-      # - name: Upload Trivy SARIF artifact
-      #   if: ${{ inputs.TRIVY_SCAN_ENABLED }}
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: trivy-results-sarif
-      #     path: trivy-results.sarif
-      #     if-no-files-found: error
-
-      # - name: Add Trivy table results to GitHub Step Summary
-      #   shell: bash
-      #   run: |
-      #     # Wrap the table content in markdown code blocks for proper rendering
-      #     echo '### Trivy Scan Results' >> $GITHUB_STEP_SUMMARY
-      #     echo '```markdown' >> $GITHUB_STEP_SUMMARY
-      #     cat trivy-results.table >> $GITHUB_STEP_SUMMARY
-      #     echo '```' >> $GITHUB_STEP_SUMMARY
-      #   # This step runs only if the previous scan step was successful
-      #   if: success() || failure()
-
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         if: ${{ inputs.TRIVY_SCAN_ENABLED }}
@@ -185,7 +141,7 @@ jobs:
           format: 'template'
           template: '@/contrib/sarif.tpl'
           output: 'trivy-results.sarif'
-          severity: 'HIGH'
+
 
       - name: Upload Trivy scan results to GitHub Security tab
         if: ${{ inputs.TRIVY_SCAN_ENABLED }}
