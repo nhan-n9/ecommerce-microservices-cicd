@@ -154,9 +154,17 @@ jobs:
         uses: github/codeql-action/upload-sarif@v4
         if: ${{ inputs.TRIVY_SCAN_ENABLED }}
         with:
-          # sarif_file: 'trivy-results.sarif'
-          # category: trivy
           sarif_file: 'trivy-results.sarif'
+          category: trivy
+          checkout_path: app
+
+      - name: Upload Trivy SARIF artifact
+        if: ${{ inputs.TRIVY_SCAN_ENABLED }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: trivy-results-sarif
+          path: trivy-results.sarif
+          if-no-files-found: error
 
       # - name: Add Trivy table results to GitHub Step Summary
       #   shell: bash
