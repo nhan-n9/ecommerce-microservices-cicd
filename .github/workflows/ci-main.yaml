@@ -143,22 +143,11 @@ jobs:
         uses: aquasecurity/trivy-action@master
         if: ${{ inputs.TRIVY_SCAN_ENABLED }}
         with:
-          # image-ref: ${{ inputs.IMAGE_NAME }}:${{ inputs.CICD_ENVIRONMENT }}
-          # format: 'table'
-          # output: 'trivy-results.table'
+          image-ref: ${{ inputs.IMAGE_NAME }}:${{ inputs.CICD_ENVIRONMENT }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
           # severity: 'HIGH,CRITICAL'
           # ignore-unfixed: true
-
-          image-ref: ${{ inputs.IMAGE_NAME }}:${{ inputs.CICD_ENVIRONMENT }}
-          scan-type: image
-          format: 'github'
-          output: 'dependency-results.sbom.json'
-          github-pat: ${{ secrets.TOKEN_GITHUB }}
-          severity: "MEDIUM,HIGH,CRITICAL"
-          scanners: "vuln"
-        env:
-          TRIVY_USERNAME: "image_registry_admin_username"
-          TRIVY_PASSWORD: "image_registry_admin_password"
 
 
       - name: Upload results to GitHub Security
@@ -167,19 +156,18 @@ jobs:
         with:
           # sarif_file: 'trivy-results.sarif'
           # category: trivy
-          name: trivy-sbom-report
-          path: '${{ github.workspace }}/app/${{ inputs.SERVICE_NAME }}/trivy-results.sbom.json'
+          sarif_file: 'trivy-results.sarif'
 
-      - name: Add Trivy table results to GitHub Step Summary
-        shell: bash
-        run: |
-          # Wrap the table content in markdown code blocks for proper rendering
-          echo '### Trivy Scan Results' >> $GITHUB_STEP_SUMMARY
-          echo '```markdown' >> $GITHUB_STEP_SUMMARY
-          cat trivy-results.table >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-        # This step runs only if the previous scan step was successful
-        if: success() || failure()
+      # - name: Add Trivy table results to GitHub Step Summary
+      #   shell: bash
+      #   run: |
+      #     # Wrap the table content in markdown code blocks for proper rendering
+      #     echo '### Trivy Scan Results' >> $GITHUB_STEP_SUMMARY
+      #     echo '```markdown' >> $GITHUB_STEP_SUMMARY
+      #     cat trivy-results.table >> $GITHUB_STEP_SUMMARY
+      #     echo '```' >> $GITHUB_STEP_SUMMARY
+      #   # This step runs only if the previous scan step was successful
+      #   if: success() || failure()
 
   update_deploy_config:
     needs: ci_jobs
