@@ -143,19 +143,32 @@ jobs:
         uses: aquasecurity/trivy-action@master
         if: ${{ inputs.TRIVY_SCAN_ENABLED }}
         with:
-          image-ref: ${{ inputs.IMAGE_NAME }}:${{ inputs.CICD_ENVIRONMENT }}
-          format: 'table'
-          output: 'trivy-results.table'
-          severity: 'HIGH,CRITICAL'
-          ignore-unfixed: true
+          # image-ref: ${{ inputs.IMAGE_NAME }}:${{ inputs.CICD_ENVIRONMENT }}
+          # format: 'table'
+          # output: 'trivy-results.table'
+          # severity: 'HIGH,CRITICAL'
+          # ignore-unfixed: true
 
-      # - name: Upload results to GitHub Security
-      #   uses: github/codeql-action/upload-sarif@v4
-      #   if: ${{ inputs.TRIVY_SCAN_ENABLED }}
-      #   with:
-      #     sarif_file: 'trivy-results.sarif'
-      #     category: trivy
-          # checkout_path: app
+          image-ref: ${{ inputs.IMAGE_NAME }}:${{ inputs.CICD_ENVIRONMENT }}
+          scan-type: image
+          format: 'github'
+          output: 'dependency-results.sbom.json'
+          github-pat: ${{ secrets.TOKEN_GITHUB }}
+          severity: "MEDIUM,HIGH,CRITICAL"
+          scanners: "vuln"
+        env:
+          TRIVY_USERNAME: "image_registry_admin_username"
+          TRIVY_PASSWORD: "image_registry_admin_password"
+
+
+      - name: Upload results to GitHub Security
+        uses: github/codeql-action/upload-sarif@v4
+        if: ${{ inputs.TRIVY_SCAN_ENABLED }}
+        with:
+          # sarif_file: 'trivy-results.sarif'
+          # category: trivy
+          name: trivy-sbom-report
+          path: '${{ github.workspace }}/app/${{ inputs.SERVICE_NAME }}/trivy-results.sbom.json'
 
       - name: Add Trivy table results to GitHub Step Summary
         shell: bash
