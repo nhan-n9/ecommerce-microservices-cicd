@@ -79,14 +79,6 @@ jobs:
           BUILD_TYPE: ${{ inputs.BUILD_TYPE }}
 
 
-      # - if: ${{ inputs.SONAR_SCAN_ENABLED }}
-      #   name: Setup Java for Sonar
-      #   uses: actions/setup-java@v5
-      #   with:
-      #     distribution: temurin
-      #     java-version: '21'
-
-
       - if: ${{ inputs.SONAR_SCAN_ENABLED }}
         name: Set up JDK for Sonar
         uses: actions/setup-java@v4
