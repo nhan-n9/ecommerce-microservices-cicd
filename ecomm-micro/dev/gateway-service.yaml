@@ -25,16 +25,18 @@ configMap:
   data:
     SPRING_PROFILES_ACTIVE: dev
     SPRING_CONFIG_IMPORT: "configserver:http://ecomm-config-ecomm-app:8080"
-livenessProbe:
-  httpGet:
-    path: /actuator/health/liveness
-    port: 8080
-    initialDelaySeconds: 30
-    periodSeconds: 30
-readinessProbe:
-  httpGet:
-    path: /actuator/health/readiness
-    port: 8080
-    initialDelaySeconds: 30
-    periodSeconds: 30
-image.digest: ""
+# livenessProbe:
+#   httpGet:
+#     path: /actuator/health/liveness
+#     port: 8080
+#     initialDelaySeconds: 30
+#     periodSeconds: 30
+# readinessProbe:
+#   httpGet:
+#     path: /actuator/health/readiness
+#     port: 8080
+#     initialDelaySeconds: 30
+#     periodSeconds: 30
+
+livenessProbe: null
+readinessProbe: null
