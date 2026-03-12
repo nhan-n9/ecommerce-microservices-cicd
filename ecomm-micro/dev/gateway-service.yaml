@@ -1,17 +1,14 @@
 nameOverride: ""
 fullnameOverride: ""
 podAnnotations: {}
-
 image:
   repository: heheh123/ecomm-gateway
   pullPolicy: IfNotPresent
   tag: dev
   digest: sha256:55f0e2bb02e133501c9b3e16b1950fca1b1593f7575bc4a06a5578f9bf5a1835
-
 service:
   type: ClusterIP
   port: 8080
-
 ingress:
   enabled: true
   className: alb
@@ -23,24 +20,21 @@ ingress:
     - paths:
         - path: /
           pathType: Prefix
-
 configMap:
   enabled: true
   data:
     SPRING_PROFILES_ACTIVE: dev
     SPRING_CONFIG_IMPORT: "configserver:http://ecomm-config-dev-ecomm-app:8080"
-
-
 livenessProbe:
   httpGet:
     path: /actuator/health/liveness
     port: 8080
     initialDelaySeconds: 30
     periodSeconds: 30
-
 readinessProbe:
   httpGet:
     path: /actuator/health/readiness
     port: 8080
     initialDelaySeconds: 30
     periodSeconds: 30
+image.digest: sha256:a35dd07f12b22664baf3716ea5edc99844198242556a29052d0b25bd26743c15
