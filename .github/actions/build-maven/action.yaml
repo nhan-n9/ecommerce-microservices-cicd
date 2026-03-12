@@ -6,7 +6,7 @@ inputs:
   SERVICE_NAME:
     type: string
   TEST_ENABLED:
-    type: string
+    type: boolean
 
 
 runs:
