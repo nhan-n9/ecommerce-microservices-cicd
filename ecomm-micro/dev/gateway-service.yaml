@@ -37,4 +37,4 @@ readinessProbe:
     port: 8080
     initialDelaySeconds: 30
     periodSeconds: 30
-image.digest: sha256:a35dd07f12b22664baf3716ea5edc99844198242556a29052d0b25bd26743c15
+image.digest: ""
