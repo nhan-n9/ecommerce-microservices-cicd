@@ -2,5 +2,5 @@
 @Library('core_lib') _
 
 springBootAppCI(
-    configFileName: 'services/config-server/config.yml'
+    configFilePath: 'services/config-server/config.yml'
 )
