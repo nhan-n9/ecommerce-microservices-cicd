@@ -1,0 +1,6 @@
+// high privilege config only!!!
+@Library('core_lib') _
+
+springBootAppCI(
+    configFileName: 'services/config-server/config.yml'
+)
