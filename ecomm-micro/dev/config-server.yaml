@@ -4,7 +4,7 @@ podAnnotations: {}
 image:
   repository: heheh123/ecomm-config
   pullPolicy: Always
-  tag: dev
+  tag: dev-142aee6
   digest: sha256:a25217a86edf9e351a1655e206dd76e21363942dc4aa3e9ad7da8ae30c34beff
 service:
   type: ClusterIP
