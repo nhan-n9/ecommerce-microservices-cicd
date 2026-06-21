@@ -5,5 +5,5 @@ springBootAppCI(
     configFilePath: 'services/config-server/config.properties',
     configRepoUrl: 'https://github.com/nhan-n9/ecommerce-microservices-cicd.git',
     configRepoBranch: 'configs',
-    deployConfigFile: 'config-server.yaml'
+    deployConfigFile: 'ecomm-micro/dev/config-server.yaml'
 )
